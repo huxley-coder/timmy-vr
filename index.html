@@ -2,56 +2,84 @@
 <html>
 <head>
     <title>Timmy VR Camera</title>
+
     <style>
-        body {
+        html, body {
             margin: 0;
+            padding: 0;
             background: black;
-            display: flex;
-            height: 100vh;
             overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        .vr-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            background: black;
         }
 
         .eye {
-            width: 50%;
-            height: 100%;
+            width: 50vw;
+            height: 100vh;
             overflow: hidden;
+            position: relative;
+            background: black;
+
+            /* rounded headset look */
+            border-radius: 35px;
+
+            /* little spacing between eyes */
+            margin: 0 4px;
         }
 
         video {
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            /* zoom in so edges disappear */
+            width: 180%;
+            height: 180%;
             object-fit: cover;
+
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
 
 <body>
 
-<div class="eye">
-    <video id="leftVideo" autoplay playsinline></video>
-</div>
+<div class="vr-container">
 
-<div class="eye">
-    <video id="rightVideo" autoplay playsinline></video>
+    <div class="eye">
+        <video id="leftVideo" autoplay playsinline muted></video>
+    </div>
+
+    <div class="eye">
+        <video id="rightVideo" autoplay playsinline muted></video>
+    </div>
+
 </div>
 
 <script>
 async function startCamera() {
     try {
-        console.log("Starting camera...");
-
         const stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
+            video: {
+                facingMode: { ideal: "environment" }
+            },
             audio: false
         });
 
         document.getElementById("leftVideo").srcObject = stream;
         document.getElementById("rightVideo").srcObject = stream;
 
-        console.log("Camera success!");
+        await document.getElementById("leftVideo").play();
+        await document.getElementById("rightVideo").play();
 
     } catch (err) {
-        console.error(err);
         alert("Camera failed: " + err.message);
     }
 }
