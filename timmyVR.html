@@ -24,31 +24,39 @@
         }
     </style>
 </head>
+
 <body>
 
-    <div class="eye">
-        <video id="leftVideo" autoplay playsinline></video>
-    </div>
+<div class="eye">
+    <video id="leftVideo" autoplay playsinline></video>
+</div>
 
-    <div class="eye">
-        <video id="rightVideo" autoplay playsinline></video>
-    </div>
+<div class="eye">
+    <video id="rightVideo" autoplay playsinline></video>
+</div>
 
 <script>
-const leftVideo = document.getElementById("leftVideo");
-const rightVideo = document.getElementById("rightVideo");
+async function startCamera() {
+    try {
+        console.log("Starting camera...");
 
-navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "environment" },
-    audio: false
-})
-.then(stream => {
-    leftVideo.srcObject = stream;
-    rightVideo.srcObject = stream;
-})
-.catch(error => {
-    alert("Camera access failed: " + error);
-});
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+        });
+
+        document.getElementById("leftVideo").srcObject = stream;
+        document.getElementById("rightVideo").srcObject = stream;
+
+        console.log("Camera success!");
+
+    } catch (err) {
+        console.error(err);
+        alert("Camera failed: " + err.message);
+    }
+}
+
+startCamera();
 </script>
 
 </body>
